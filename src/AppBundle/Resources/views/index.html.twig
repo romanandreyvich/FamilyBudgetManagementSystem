@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% block headscript %}
+<script>
+    window.user_id = '{{ user.id }}';
+    window.salt = '{{ user.salt }}';
+    window.from = '{{ from | date('Y-m-d') }}';
+    window.to = '{{ to | date('Y-m-d') }}';
+</script>
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper" ng-controller="mainController">
+        <div id="container">
+            <div id="welcome">
+                <h1><span>Система управления семейным бюджетом</span></h1><br />
+                <h2><span>{{ user.username }}, <span ng-hide="!family">Ваша семья по фамилии: [- family.lastname -]</span><span ng-hide="family">На данный момент, у вас нет семьи</span></span></h2>
+                <div class="menu">
+                    <ul class="nav nav-tabs">
+                        <li ng-class="{ 'active': page == 'transactions'}" ng-click="setPage('transactions')"><a href="#">Мои транзакции</a></li>
+                        <li ng-class="{ 'active': page == 'family'}" ng-click="setPage('family')"><a href="#">Отчет по транзакциям</a></li>
+                        <li ng-class="{ 'active': page == 'report'}" ng-click="setPage('report')"><a href="#">Доли по членам семьи</a></li>
+                        <li ng-class="{ 'active': page == 'settings'}" ng-click="setPage('settings')"><a href="#">Настройки</a></li>
+                        <li ng-class="{ 'active': page == 'dictionary'}" ng-click="setPage('dictionary')"><a href="#">Справочники</a></li>
+                    </ul>
+                </div>
+                <div ng-show="loading" class="loader">загрузка..</div>
+                <div class="transactions-page" ng-show="page == 'transactions'">
+                    <div class="add-transaction">
+                        <form class="navbar-form pull-left">
+                            <select class="span6" name="category" ng-model="category">
+                                <option ng-repeat="cat in transactionCategories"  value="[- cat.id -]">[- cat.name -]</option>
+                            </select>
+                            <input type="text" class="span6" placeholder="сумма" name="asset" ng-model="asset" />
+                            <button type="submit" class="btn add-transaction-button" ng-click="send()">отправить</button>
+                        </form>
+                    </div>
+                    <table class="table table-striped width100">
+                        <tr class="row-fluid table table-striped">
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Тип транзакции
+                            </th>
+                            <th>
+                                Категория транзакции
+                            </th>
+                            <th>
+                                Дата/время транзакции
+                            </th>
+                            <th>
+                                Сумма
+                            </th>
+                        </tr>
+                        <tr class="row-fluid" ng-repeat="tran in transactions | orderBy:'id':true">
+                            <td>
+                                [- tran.id -]
+                            </td>
+                            <td>
+                                [- tran.category.type.name -]
+                            </td>
+                            <td>
+                                [- tran.category.name -]
+                            </td>
+                            <td>
+                                [- tran.time | date:'yyyy-MM-dd HH:mm' -]
+                            </td>
+                            <td>
+                                [- tran.asset -]
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="transactions-page" ng-show="page == 'family'">
+                    <div ng-hide="!family">
+                        Отчет за период с <input type="text" class="span2" placeholder="2016-09-22" name="from_dt" ng-model="from" /> по
+                        <input type="text" class="span2" placeholder="2016-09-30" name="to" ng-model="to" /><br />
+                        <button type="submit" class="btn add-transaction-button" ng-click="showReport()" style="display:none;">смотреть отчет</button>
+                        <hr>
+                    </div>
+                    <table class="table table-striped width100" ng-repeat="user in family.users" ng-if="family">
+                        <tr class="row-fluid table table-striped">
+                            <th colspan="5">[- user.username -]</th>
+                        </tr>
+                        <tr class="row-fluid table table-striped" ng-if="user.transactions.length > 0">
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Тип транзакции
+                            </th>
+                            <th>
+                                Категория транзакции
+                            </th>
+                            <th>
+                                Дата/время транзакции
+                            </th>
+                            <th>
+                                Сумма
+                            </th>
+                        </tr>
+                        <tr class="row-fluid table table-striped" ng-if="user.transactions.length == 0">
+                            <td colspan="5">нет транзакций</td>
+                        </tr>
+                        <tr class="row-fluid" ng-repeat="tran in user.transactions | orderBy:'id':true" ng-if="tran.time >= from && tran.time <= to">
+                            <td>
+                                [- tran.id -]
+                            </td>
+                            <td>
+                                [- tran.category.type.name -]
+                            </td>
+                            <td>
+                                [- tran.category.name -]
+                            </td>
+                            <td>
+                                [- tran.time | date:'yyyy-MM-dd HH:mm' -]
+                            </td>
+                            <td>
+                                [- tran.asset -]
+                            </td>
+                        </tr>
+                    </table>
+                    <div ng-if="!family">
+                        На данный момент, у вас нет семьи..
+                    </div>
+                </div>
+                <div class="transactions-page" ng-show="page == 'report'">
+                    <table ng-repeat="user in compare" ng-if="user.compare.length != 0 && !compare.error" class="user-block" ng-init="draw($index, user.compare, user.username)">
+                        <tr>
+                            <td colspan="3" height="140">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td width="400px;" valign="top">
+                                            <h2 style="float:left; margin:0;">[- user.username -]</h2>
+                                        </td>
+                                        <td valign="top">
+                                            <button class="btn add-transaction-button" ng-click="draw($index, user.compare, user.username)" style="float:right;">Обновить график</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">
+                                            <strong style="float:left;">Расходы по категориям</strong>
+                                        </td>
+                                        <td valign="top">
+                                            <strong style="float:right; margin:0;">Расходы по типу</strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top" style="width:400px;">
+                                <table class="table table-striped width100">
+                                    <tr class="row-fluid table table-striped">
+                                        <th>
+                                            Категория транзакции
+                                        </th>
+                                        <th>
+                                            Сумма
+                                        </th>
+                                    </tr>
+                                    <tr class="row-fluid" ng-repeat="tranInCategory in categoryToFilter(user.transactions) | filter:filterCategory" ng-init="total = 0">
+                                        <td>
+                                            [- tranInCategory.category -]
+                                        </td>
+                                        <td>
+                                            <span ng-repeat="tran in user.transactions | filter:{category: tranInCategory.category}" ng-init="$parent.total = $parent.total + tran.asset"></span>
+                                            <span>[- total -] руб.</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td valign="top">
+                                <div id="index[- $index -]" style="width:100%; height:300px; margin-top:-30px;"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div ng-if="!family">
+                        На данный момент, у вас нет семьи..
+                    </div>
+                </div>
+                <div class="transactions-page" ng-show="page == 'settings'">
+                    <div ng-hide="family" class="change-family">
+                        <div>
+                            Выберите семью:<br />
+                            <select class="span6" name="family" ng-model="setFamily">
+                                <option ng-repeat="fam in allFamilies"  value="[- fam.id -]">[- fam.id -]. [- fam.lastname -]</option>
+                            </select><br />
+                            <button type="submit" class="btn add-transaction-button" ng-click="setFamilyButton()">добавить</button>
+                        </div><br />
+                        <div>
+                            Или создайте новую (введите фамилию):<br />
+                            <input type="text" class="span6" ng-model="setNewFamily" /><br />
+                            <button type="submit" class="btn add-transaction-button" ng-click="setNewFamilyButton()">создать</button>
+                        </div>
+                    </div>
+                    <div class="api-data">
+                        <h2>Данные для доступа к API</h2>
+                        User ID : {{ user.id }}<br />
+                        API Access Token : {{ user.salt }}
+                    </div>
+                </div>
+                <div class="transactions-page" ng-show="page == 'dictionary'">
+                    <div style="margin-bottom: 20px;">
+                        <h2>Настройки транзакций</h2>
+                        <h3>Создайте тип транзакции</h3>
+                        Введите имя типа транзакции:<br />
+                        <input type="text" class="span6" ng-model="newTransactionType" /><br />
+                        <button type="submit" class="btn add-transaction-button" ng-click="newTransactionTypeButton()">создать</button>
+                    </div>
+                    <div>
+                        <h3>Создайте категорию транзакции</h3>
+                        введите имя категории транзакции:<br />
+                        <input type="text" class="span6" ng-model="newTransactionCategory" /><br />
+                        <select class="span6" name="category" ng-model="newTransactionCategoryType">
+                            <option ng-repeat="type in transactionTypes"  value="[- type.id -]">[- type.name -]</option>
+                        </select><br />
+                        <button type="submit" class="btn add-transaction-button" ng-click="newTransactionCategoryButton()">создать</button>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/app/js/app.js') }}" ></script>
+{% endblock %}

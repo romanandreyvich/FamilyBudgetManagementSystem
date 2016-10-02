@@ -1,0 +1,20 @@
+services:
+    app.transactions_report:
+        class: ApiBundle\Services\TransactionsReport
+        arguments: ['@doctrine.orm.entity_manager']
+
+    app.token_authenticator:
+        class: ApiBundle\Services\APITokenAuthenticator
+        arguments: ['@doctrine.orm.entity_manager']
+
+    app.api_request_listener:
+        class: ApiBundle\Services\APIRequestListener
+        arguments: ['@serializer']
+        tags:
+           - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    kernel.listener.api_exception_listener:
+        arguments: ["@kernel"]
+        class: ApiBundle\EventListener\APIExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

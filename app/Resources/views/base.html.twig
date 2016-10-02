@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="mfbsApp">
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+        <link href="{{ asset('bundles/app/css/bootstrap.css') }}" rel="stylesheet" media="screen">
+        <link href="{{ asset('bundles/app/css/main.css') }}" rel="stylesheet" media="screen">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>
+        <script src="{{ asset('bundles/app/js/app.js') }}" ></script>
+        {% block headscript %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
