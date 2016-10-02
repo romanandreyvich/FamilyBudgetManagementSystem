@@ -21,13 +21,13 @@ Family budget management system
 git clone git@github.com:romanandreyvich/FamilyBudgetManagementSystem.git
 ```
 
-Команда создаст директорию managementFamilyBudgetSystem/ и копию проекта внутри директории, 
-если нет необходимости создавать директорию managementFamilyBudgetSystem/ то после команды нужно
+Команда создаст директорию FamilyBudgetManagementSystem/ и копию проекта внутри директории, 
+если нет необходимости создавать директорию FamilyBudgetManagementSystem/ то после команды нужно
 добавить точку ".", чтобы копия проекта появилась в той директории из которой выполняется команда.
 
 **2. Установка зависимостей проекта через composer**
 
-В корневой директории проекта (помолочанию managementFamilyBudgetSystem/) необходимо выполнить
+В корневой директории проекта (помолочанию FamilyBudgetManagementSystem/) необходимо выполнить
 команду:
 
 ```
