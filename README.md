@@ -127,9 +127,9 @@ php bin/console server:run
 
 API
 --------------
-Документация к API доступна по ссылке: http://andreybelousov.ru/doc/api/
+Документация к API доступна по ссылке: http://thetimetable.ru/doc/api/index.html
 
-В формате Swagger: http://andreybelousov.ru/doc/api/swagger/swagger.json
+В формате Swagger: http://thetimetable.ru/doc/api/swagger/swagger.json
 
 Сервис для тестирования API: http://petstore.swagger.io
 
