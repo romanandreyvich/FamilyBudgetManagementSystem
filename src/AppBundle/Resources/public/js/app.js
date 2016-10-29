@@ -96,20 +96,25 @@ app.controller('mainController', ['$scope', '$http', function($scope, $http) {
             $scope.asset = null;
             $scope.loading = false;
 
-            $http.get(Routing.generate('api_get_report',
-                {
-                    'user_id' : $scope.userId,
-                    'access_token' : $scope.token,
-                    'family' : $scope.family.id,
-                    'report_type' : '2'
-                })
-            ).success(function(response)
+            $http.get(Routing.generate('api_families', {'user_id' : $scope.userId, 'access_token' : $scope.token, 'user' : $scope.userId})).success(function(response)
             {
-                $scope.compare = response.result;
-                $scope.loading = false;
+                $scope.family = response.result;
+                $http.get(Routing.generate('api_get_report',
+                    {
+                        'user_id' : $scope.userId,
+                        'access_token' : $scope.token,
+                        'family' : $scope.family.id,
+                        'report_type' : '2'
+                    })
+                ).success(function(response)
+                {
+                    $scope.compare = response.result;
+                    $scope.loading = false;
+                }).error(function(response) {
+                    $scope.compare = false;
+                    $scope.loading = false;
+                });
             }).error(function(response) {
-                $scope.compare = false;
-                $scope.loading = false;
             });
 
         }).error(function (response) {
@@ -167,6 +172,7 @@ app.controller('mainController', ['$scope', '$http', function($scope, $http) {
         $scope.loading = true;
         $http.post(Routing.generate('api_create_family', {'user_id' : $scope.userId, 'access_token' : $scope.token, 'lastname' : $scope.setNewFamily})).success(function(response)
         {
+            response = response.result;
             $http.put(Routing.generate('api_set_family',
                 {
                     'user_id' : $scope.userId,

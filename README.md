@@ -125,11 +125,17 @@ php bin/console server:run
 
 А затем войти в систему: http://127.0.0.1:8000/login
 
+--------------
+
+Проект в развернутом виде, можно посмотреть по ссылке: http://fbms.belousovr.com/
+
+Login: roman, Password: 123
+
 API
 --------------
-Документация к API доступна по ссылке: http://andreybelousov.ru/doc/api/
+Документация к API доступна по ссылке: http://fbms.belousovr.com/doc/api/index.html
 
-В формате Swagger: http://andreybelousov.ru/doc/api/swagger/swagger.json
+В формате Swagger: http://fbms.belousovr.com/doc/api/swagger.json
 
 Сервис для тестирования API: http://petstore.swagger.io
 

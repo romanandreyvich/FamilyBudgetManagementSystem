@@ -47,3 +47,11 @@ a:hover { text-decoration: none; }
 .change-family {
     margin-bottom: 20px;
 }
+.swagger {
+    border-left: 4px solid #ccc;
+    color: dimgray;
+    padding:10px;
+}
+.swagger:hover {
+    color:dimgray;
+}
