@@ -73,3 +73,7 @@ a:hover { text-decoration: none; }
 .login-error {
     color:#c43c35;
 }
+.or-register {
+    text-align:center;
+    margin:auto;
+}
