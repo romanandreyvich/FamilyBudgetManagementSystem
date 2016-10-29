@@ -51,7 +51,7 @@ class APIUsersController extends APIController
 
         $form->submit($data);
 
-        if ($form->isValid()) {
+        if ($form->isValid() && $request->get('password')) {
             $user->setEnabled(true);
             $user->setPlainPassword($request->get('password'));
 
@@ -153,7 +153,7 @@ class APIUsersController extends APIController
 
         $form->submit($data);
 
-        if ($form->isValid()) {
+        if ($form->isValid() && $request->get('password')) {
             $user->setPlainPassword($request->get('password'));
             $em->persist($user);
             $em->flush();

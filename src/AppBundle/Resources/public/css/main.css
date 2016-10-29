@@ -55,3 +55,21 @@ a:hover { text-decoration: none; }
 .swagger:hover {
     color:dimgray;
 }
+.login-form {
+    display: block;
+    margin:auto;
+    width: 220px;
+}
+#remember_me {
+    float:left;
+    margin-right:20px;
+}
+#_submit {
+    width:220px;
+}
+.login-title {
+    text-align:center;
+}
+.login-error {
+    color:#c43c35;
+}

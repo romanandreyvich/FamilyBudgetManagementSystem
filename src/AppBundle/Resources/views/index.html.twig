@@ -14,7 +14,7 @@
         <div id="container">
             <div id="welcome">
                 <h1><span>Система управления семейным бюджетом</span></h1><br />
-                <h2><span>{{ user.username }}, <span ng-hide="!family">Ваша семья по фамилии: [- family.lastname -]</span><span ng-hide="family">На данный момент, у вас нет семьи</span></span></h2>
+                <h2><span>Здравствуйте {{ user.username }}<span ng-hide="!family">, Ваша семья по фамилии: [- family.lastname -]</span></span></h2>
                 <div class="menu">
                     <ul class="nav nav-tabs">
                         <li ng-class="{ 'active': page == 'transactions'}" ng-click="setPage('transactions')"><a href="#">Мои транзакции</a></li>

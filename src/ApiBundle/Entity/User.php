@@ -29,10 +29,6 @@ class User extends BaseUser
      */
     protected $email;
     /**
-     * @Assert\NotBlank()
-     */
-    protected $password;
-    /**
      * @ORM\ManyToOne(targetEntity="Family", inversedBy="users")
      * @ORM\JoinColumn(name="family_id", referencedColumnName="id", nullable=true)
      */
