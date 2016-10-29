@@ -13,6 +13,7 @@
     <div id="wrapper" ng-controller="mainController">
         <div id="container">
             <div id="welcome">
+                <a href="{{ path('fos_user_security_logout') }}" style="float:right; margin-top:15px;">Выход</a>
                 <h1><span>Система управления семейным бюджетом</span></h1><br />
                 <h2><span>Здравствуйте {{ user.username }}<span ng-hide="!family">, Ваша семья по фамилии: [- family.lastname -]</span></span></h2>
                 <div class="menu">
