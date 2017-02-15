@@ -65,6 +65,34 @@ class APIUsersController extends APIController
     }
 
     /**
+     * Метод user/authorize - позволяет создать пользователя системы.
+     *
+     * @Route("/user/authorize", name="api_authorize_user")
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @throws APINotFoundException
+     */
+    public function authorizeUserAction(Request $request)
+    {
+        $userManager = $this->get('fos_user.user_manager');
+        $factory = $this->get('security.encoder_factory');
+
+        $user = $userManager->loadUserByUsername($request->get('username'));
+
+        $encoder = $factory->getEncoder($user);
+
+        $bool = ($encoder->isPasswordValid($user->getPassword(), $request->get('password'), $user->getSalt()));
+
+        if (!$user || !$bool) {
+            throw new APINotFoundException();
+        }
+
+        return $this->getResponse(['user' => $user], $this->get('serializer'));
+    }
+
+    /**
      * Метод /family/create - позволяет создать семью в системе.
      *
      * @Route("/family/create", name="api_create_family", options = { "expose" = true })
